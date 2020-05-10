@@ -7,7 +7,7 @@ struct label{
     std::string word; 
     int positiveCount;
     int negativeCount;
-    label(std::string w, int p = 0, int = 0): word(w), positiveCount(p), negativeCount(n){}
+    label(std::string w, int p = 0, int n = 0): word(w), positiveCount(p), negativeCount(n){}
 };
 class NaiveBayesClassifier{
     private:
