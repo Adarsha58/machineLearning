@@ -1,26 +1,28 @@
 #ifndef NaiveBayesClassifier_H
 #define NaiveBayesClassifier_H
+#include <string>
 #include <list>
 
 struct label{
-    string 
-}
+    std::string word; 
+    int positiveCount;
+    int negativeCount;
+    label(std::string w, int p = 0, int = 0): word(w), positiveCount(p), negativeCount(n){}
+};
 class NaiveBayesClassifier{
     private:
-        const int size = 43;
-        std::list<Integer*> *entries;
+        int size;
+        std::list<label>* entries;
+        int positiveReview;
+        int negativeReveiw;
+        int trainingTime; 
 
     public:
+        NaiveBayesClassifier(std::string); //default constructor is used for training
         NaiveBayesClassifier();
-        void insert(Integer*);
-        int deleteElement(int, bool);
-        int look(int);
-        void lookup(int);
-        int hash(int value){
-            if(value < 0)
-                return (value % 43) + 43;
-            return value % 43;
-        }
-        void print();
+        void insert(label);
+        int hash(std::string);
+        void test(std::string);
+
 };
 #endif
