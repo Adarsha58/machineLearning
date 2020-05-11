@@ -12,7 +12,7 @@ struct Label{
 };
 class NaiveBayesClassifier{
     private:
-        const int size = 6577;
+        const int size = 1999;
         std::list<Label>* entries;
         int totalPositiveReviewWords;
         int totalNegativeReviewWords;

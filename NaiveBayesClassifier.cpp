@@ -90,7 +90,7 @@ void NaiveBayesClassifier::insert(string word, int label){
 
 int NaiveBayesClassifier::hash(string word){
     unsigned int hashValue = 1;
-    for (int i = 0; i < word.size(); i++){
+    for (int i = 0; i < (word.size()) /2; i= i+2){
         hashValue = hashValue* word[i];
     }
     return hashValue % this->size; 
@@ -150,12 +150,12 @@ double NaiveBayesClassifier::test(string fileName){
         
         
             if(probNeg > probPos){
-                if (fileName != "training.txt") cout<<0<<endl;
+                //if (fileName != "training.txt") cout<<0<<endl;
                 if(label == 0) {
                      accuracy ++;  
                 }
             }else{
-                if (fileName != "training.txt") cout<<1<<endl;
+               // if (fileName != "training.txt") cout<<1<<endl;
                 if(label ==1){
                     accuracy ++;
                 }
