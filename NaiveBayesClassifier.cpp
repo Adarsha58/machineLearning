@@ -139,12 +139,12 @@ double NaiveBayesClassifier::test(string fileName){
         
         
             if(probNeg > probPos){
-                cout<<0<<endl;
+                if (fileName != "training.txt") cout<<0<<endl;
                 if(label == 0) {
                      accuracy ++;  
                 }
             }else{
-                cout<<1<<endl;
+                if (fileName != "training.txt") cout<<1<<endl;
                 if(label ==1){
                     accuracy ++;
                 }
@@ -165,12 +165,13 @@ int main(int argc, char** argv){
     NaiveBayesClassifier n(argv[1]);
     auto t2 = std::chrono::high_resolution_clock::now();
     double durationTraining = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() * 0.000001;
-    cout<< (int) durationTraining << " seconds (training)\n";
-
+    
     t1 = std::chrono::high_resolution_clock::now();
     double accuracy = n.test(argv[2]);
     t2 = std::chrono::high_resolution_clock::now();
     double durationTesting = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() * 0.000001;
+    
+    cout<< (int) durationTraining << " seconds (training)\n";
     cout<< (int) durationTesting << " seconds (labeling)\n";
 
     cout<< fixed << setprecision(3) << n.test(argv[1]) << " (training)\n";
