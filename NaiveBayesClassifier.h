@@ -26,8 +26,7 @@ class NaiveBayesClassifier{
         void insert(std::string, int);
         int hash(std::string);
         double returnProbability(std::string, int label);
-        void test(std::string);
-        void print();
+        double test(std::string);
 
 };
 #endif

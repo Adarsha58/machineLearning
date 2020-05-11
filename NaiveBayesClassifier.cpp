@@ -19,8 +19,6 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
     totalPositiveReviews = 0;
     totalNegativeReviews = 0;
 
-
-    auto t1 = std::chrono::high_resolution_clock::now();
     if(in.is_open()){
         
         entries = new list<Label>[size];
@@ -48,8 +46,6 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
     } else{
         cerr << "Can't open the file"<< endl;
     }
-    auto t2 = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
     cout<< "Trianing time: "<< duration<<endl; 
 }
 
@@ -114,7 +110,7 @@ double NaiveBayesClassifier::returnProbability(string word, int label){
         return a/(totalNegativeReviewWords + a* kNegative);
 }
 
-void NaiveBayesClassifier::test(string fileName){
+double NaiveBayesClassifier::test(string fileName){
     double accuracy = 0;
     double totalReviews = 0.0;
     ifstream in(fileName);
@@ -143,10 +139,12 @@ void NaiveBayesClassifier::test(string fileName){
         
         
             if(probNeg > probPos){
+              //  cout<<0<<endl;
                 if(label == 0) {
                      accuracy ++;  
                 }
             }else{
+              //  cout<<1<<endl;
                 if(label ==1){
                     accuracy ++;
                 }
@@ -156,17 +154,26 @@ void NaiveBayesClassifier::test(string fileName){
     } else{
         cerr << "Can't open the file"<< endl;
     }
-    cout<< "accuracy " <<accuracy<<endl;
-    cout<< "totalReviews " << totalReviews <<endl;
-    accuracy = accuracy/ totalReviews;
-    cout<< "Accuary: "<< accuracy<<endl;
+    return accuracy/ totalReviews;
 }
 
 int main(int argc, char** argv){
     if(argc != 3){
         cerr << "Include both your training and testing data"<< endl;
     }
+    
+    auto t1 = std::chrono::high_resolution_clock::now();
     NaiveBayesClassifier n(argv[1]);
-    n.test(argv[2]);
-    n.print();
+    auto t2 = std::chrono::high_resolution_clock::now();
+    double durationTraining = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+    cout<< durationTraining << " seconds (training)\n";
+
+    auto t1 = std::chrono::high_resolution_clock::now();
+    double accuracy = n.test(argv[2]);
+    auto t2 = std::chrono::high_resolution_clock::now();
+    double durationTesting = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+    cout<< durationTesting << " seconds (labeling)\n";
+
+    cout<< n.test(argv[1]) << " (training)\n";
+    cout << accuracy << " (testing)\n";
 }
