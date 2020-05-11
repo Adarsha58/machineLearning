@@ -14,28 +14,20 @@ class NaiveBayesClassifier{
     private:
         const int size = 6577;
         std::list<Label>* entries;
-        int positiveReview;
-        int negativeReview;
-        int p;
-        int n;
+        int totalPositiveReviewWords;
+        int totalNegativeReviewWords;
         int kPositve;
         int kNegative;
-        double returnProbability(std::string, int label);
+        int totalPositiveReviews;
+        int totalNegativeReviews;
 
     public:
         NaiveBayesClassifier(std::string); //constructor is used for training
         void insert(std::string, int);
         int hash(std::string);
+        double returnProbability(std::string, int label);
         void test(std::string);
-
-        void print(){
-            for(int i =0; i < size; i++){
-                for (std::list<Label>::iterator it = entries[i].begin(); it != entries[i].end(); ++it){
-                   std::cout<< (it)->word << " " << (it)->positiveCount <<  " " << (it)->negativeCount << "\n";
-                }
-               // std::cout << "__________________________________________________________\n";
-            }
-        }
+        void print();
 
 };
 #endif

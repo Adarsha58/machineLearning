@@ -4,6 +4,7 @@
 #include "NaiveBayesClassifier.h"
 #include <math.h>
 #include <chrono>
+#include <unordered_set>
 
 using namespace std;
 
@@ -11,12 +12,13 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
     
     ifstream in(fileName);
     string line;
-    negativeReview = 0;
-    positiveReview = 0;
-    kNegative = 0;
+    totalPositiveReviewWords = 0;
+    totalNegativeReviewWords = 0;
     kPositve = 0;
-    p = 0;
-    n = 0;
+    kNegative = 0;
+    totalPositiveReviews = 0;
+    totalNegativeReviews = 0;
+
 
     auto t1 = std::chrono::high_resolution_clock::now();
     if(in.is_open()){
@@ -30,13 +32,15 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
             istringstream ss(line.substr(0, line.size()-3));
             string token;
             if(label == 0){
-                n++;
+               totalPositiveReviews++;
             }else{
-                p++;
+                totalNegativeReviews++;
             }
+           
 
-            while(getline(ss, token, ' '))
-                    this->insert(token, label);
+            while(getline(ss, token, ' ')){
+                this->insert(token, label);
+            }
            
         }
         in.close();
@@ -57,11 +61,13 @@ void NaiveBayesClassifier::insert(string word, int label){
             if(label == 1){
                 if(it->positiveCount == 0) kPositve++;
                 (it->positiveCount)++;
-                positiveReview++;
+                totalPositiveReviewWords++;
+
             } else{
                 if(it->negativeCount == 0) kNegative++;
                 (it->negativeCount)++;
-                negativeReview++;
+                totalNegativeReviewWords++;
+    
             }
             return;
         }
@@ -70,13 +76,13 @@ void NaiveBayesClassifier::insert(string word, int label){
         Label l(word, 0, 1);
         entries[index].push_front(l);
         kNegative ++;
-        negativeReview++;
+        totalNegativeReviewWords++;
       
     }else{
         Label l(word, 1, 0);
         entries[index].push_front(l);
         kPositve++;
-        positiveReview++;
+        totalPositiveReviewWords++;
     }
 }
 
@@ -90,17 +96,22 @@ int NaiveBayesClassifier::hash(string word){
 
 double NaiveBayesClassifier::returnProbability(string word, int label){
     int index = this->hash(word);
+    double a = 1.0;
 
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
             if(label == 0){
-                return (it->negativeCount + 1.0)/ (negativeReview + kPositve);
+                return (it->negativeCount + a)/ (totalNegativeReviewWords + a *kPositve);
             }else{
-                return (it->positiveCount + 1.0)/ (positiveReview + kNegative);
+                return (it->positiveCount + a)/ (totalPositiveReviewWords + a* kNegative);
             }
         }
     }
-    return 0;
+
+    if(label == 1)
+        return a/(totalPositiveReviewWords + a* kPositve);
+    else 
+        return a/(totalNegativeReviewWords + a* kNegative);
 }
 
 void NaiveBayesClassifier::test(string fileName){
@@ -109,8 +120,8 @@ void NaiveBayesClassifier::test(string fileName){
     ifstream in(fileName);
     string line;
   
-    double pPositiveReview = p * 1.0 / (p + n); 
-    double pNegativeReview = n * 1.0 / (p + n); 
+    double pPositiveReview = totalPositiveReviews * 1.0 / (totalPositiveReviews + totalNegativeReviews); 
+    double pNegativeReview = 1 - pPositiveReview;
 
     if(in.is_open()){
         while (getline(in, line)){
@@ -124,18 +135,21 @@ void NaiveBayesClassifier::test(string fileName){
             string token;
 
 
-           while(getline(ss, token, ' ')){
-                    probPos += log(returnProbability(token, 1));
-                    probNeg += log(returnProbability(token, 0));
-            
+        
+            while(getline(ss, token, ' ')){
+                        probPos += log(returnProbability(token, 1));
+                        probNeg += log(returnProbability(token, 0));
             }
-           
+        
+        
             if(probNeg > probPos){
-                if(label == 0) accuracy ++;
-                //cout << 0;
+                if(label == 0) {
+                     accuracy ++;  
+                }
             }else{
-                if(label ==1) accuracy ++;
-               // cout<< 1;
+                if(label ==1){
+                    accuracy ++;
+                }
             }
         }
         in.close();
@@ -154,5 +168,5 @@ int main(int argc, char** argv){
     }
     NaiveBayesClassifier n(argv[1]);
     n.test(argv[2]);
-   // n.print();
+    n.print();
 }
