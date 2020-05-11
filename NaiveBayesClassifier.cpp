@@ -24,7 +24,6 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
         
         entries = new list<Label>[size];
         while (getline(in, line)){
-        
             int label= line[line.size()-1] - '0';
             
 
@@ -36,9 +35,13 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
                 totalNegativeReviews++;
             }
            
-
+            string tmp;
+            getline(ss, tmp, ' ');
             while(getline(ss, token, ' ')){
-                this->insert(token, label);
+                string bigram = tmp + " " + token;
+                this->insert(bigram, label);
+               // cout<< "inserting: "<< bigram <<endl; 
+                tmp = token;
             }
            
         }
@@ -129,12 +132,15 @@ double NaiveBayesClassifier::test(string fileName){
             
             istringstream ss(line.substr(0, line.size()-3));
             string token;
+            string tmp;
+            getline(ss, tmp, ' ');
 
-
-        
             while(getline(ss, token, ' ')){
-                        probPos += log(returnProbability(token, 1));
-                        probNeg += log(returnProbability(token, 0));
+                string bigram = tmp + " " +token;
+                probPos += log(returnProbability(bigram, 1));
+                probNeg += log(returnProbability(bigram, 0));
+               // cout << "testing: " << bigram<<endl;
+                tmp = token;
             }
         
         
