@@ -19,14 +19,18 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
     kNegative = 0;
     totalPositiveReviews = 0;
     totalNegativeReviews = 0;
+    int lineNumber = 0;
 
     if(in.is_open()){
         
         entries = new list<Label>[size];
-        while (getline(in, line)){
         
+        while (getline(in, line)){
+            
+           
             int label= line[line.size()-1] - '0';
             
+
 
             istringstream ss(line.substr(0, line.size()-3));
             string token;
@@ -36,11 +40,20 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
                 totalNegativeReviews++;
             }
            
-
-            while(getline(ss, token, ' ')){
-                this->insert(token, label);
+            if(lineNumber % 2 != 0){
+                while(getline(ss, token, ' ')){
+                    this->insert(token, label);
+                }
+            }else{
+                string tmp;
+                getline(ss, tmp, ' ');
+                while(getline(ss, token, ' ')){
+                    string bigram = tmp + " " + token;
+                    this->insert(bigram, label);
+                    tmp = token;
+                }
             }
-           
+            lineNumber++;
         }
         in.close();
         
@@ -112,7 +125,7 @@ double NaiveBayesClassifier::returnProbability(string word, int label){
 
 double NaiveBayesClassifier::test(string fileName){
     double accuracy = 0;
-    double totalReviews = 0.0;
+    int totalReviews = 0;
     ifstream in(fileName);
     string line;
   
@@ -121,7 +134,6 @@ double NaiveBayesClassifier::test(string fileName){
 
     if(in.is_open()){
         while (getline(in, line)){
-            totalReviews++;
             double probPos = log(pPositiveReview); 
             double probNeg = log(pNegativeReview);
 
@@ -130,14 +142,23 @@ double NaiveBayesClassifier::test(string fileName){
             istringstream ss(line.substr(0, line.size()-3));
             string token;
 
-
-        
-            while(getline(ss, token, ' ')){
+            if(totalReviews % 2 != 0){
+                while(getline(ss, token, ' ')){
                         probPos += log(returnProbability(token, 1));
                         probNeg += log(returnProbability(token, 0));
+                }
+            }else{
+                string tmp;
+                getline(ss, tmp, ' ');
+                while(getline(ss, token, ' ')){
+                    string bigram = tmp + " " + token;
+                    probPos += log(returnProbability(bigram, 1));
+                    probNeg += log(returnProbability(bigram, 0));
+                    tmp = token;
+                }
             }
-        
-        
+
+            totalReviews++;
             if(probNeg > probPos){
                 if (fileName != "training.txt") cout<<0<<endl;
                 if(label == 0) {
@@ -154,7 +175,7 @@ double NaiveBayesClassifier::test(string fileName){
     } else{
         cerr << "Can't open the file"<< endl;
     }
-    return accuracy/ totalReviews;
+    return accuracy * 1.0/ totalReviews;
 }
 
 int main(int argc, char** argv){
