@@ -1,5 +1,5 @@
-all: NaiveBayesClassifier.sh
+all: NaiveBayesClassifier
 
-NaiveBayesClassifier.sh: NaiveBayesClassifier.cpp
+NaiveBayesClassifier: NaiveBayesClassifier.cpp
 	g++ -o NaiveBayesClassifier.sh NaiveBayesClassifier.cpp
 
