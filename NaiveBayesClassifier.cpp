@@ -5,6 +5,7 @@
 #include <math.h>
 #include <chrono>
 #include <unordered_set>
+#include <iomanip>
 
 using namespace std;
 
@@ -45,8 +46,7 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
         
     } else{
         cerr << "Can't open the file"<< endl;
-    }
-    cout<< "Trianing time: "<< duration<<endl; 
+    } 
 }
 
 
@@ -139,12 +139,12 @@ double NaiveBayesClassifier::test(string fileName){
         
         
             if(probNeg > probPos){
-              //  cout<<0<<endl;
+                cout<<0<<endl;
                 if(label == 0) {
                      accuracy ++;  
                 }
             }else{
-              //  cout<<1<<endl;
+                cout<<1<<endl;
                 if(label ==1){
                     accuracy ++;
                 }
@@ -161,19 +161,18 @@ int main(int argc, char** argv){
     if(argc != 3){
         cerr << "Include both your training and testing data"<< endl;
     }
-    
     auto t1 = std::chrono::high_resolution_clock::now();
     NaiveBayesClassifier n(argv[1]);
     auto t2 = std::chrono::high_resolution_clock::now();
-    double durationTraining = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
-    cout<< durationTraining << " seconds (training)\n";
+    double durationTraining = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() * 0.000001;
+    cout<< (int) durationTraining << " seconds (training)\n";
 
-    auto t1 = std::chrono::high_resolution_clock::now();
+    t1 = std::chrono::high_resolution_clock::now();
     double accuracy = n.test(argv[2]);
-    auto t2 = std::chrono::high_resolution_clock::now();
-    double durationTesting = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
-    cout<< durationTesting << " seconds (labeling)\n";
+    t2 = std::chrono::high_resolution_clock::now();
+    double durationTesting = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() * 0.000001;
+    cout<< (int) durationTesting << " seconds (labeling)\n";
 
-    cout<< n.test(argv[1]) << " (training)\n";
-    cout << accuracy << " (testing)\n";
+    cout<< fixed << setprecision(3) << n.test(argv[1]) << " (training)\n";
+    cout<< fixed << setprecision(3) <<  accuracy << " (testing)\n";
 }
