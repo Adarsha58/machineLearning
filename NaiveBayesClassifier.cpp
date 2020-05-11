@@ -35,13 +35,16 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
                 totalNegativeReviews++;
             }
            
-            string tmp;
+            string tmp, tmp2;
             getline(ss, tmp, ' ');
+            getline(ss,tmp2, ' ');
+    
             while(getline(ss, token, ' ')){
-                string bigram = tmp + " " + token;
+                string bigram = tmp + " " + tmp2 + " "+ token;
                 this->insert(bigram, label);
                // cout<< "inserting: "<< bigram <<endl; 
-                tmp = token;
+                tmp = tmp2;
+                tmp2 = token;
             }
            
         }
@@ -132,15 +135,17 @@ double NaiveBayesClassifier::test(string fileName){
             
             istringstream ss(line.substr(0, line.size()-3));
             string token;
-            string tmp;
+            string tmp, tmp2;
             getline(ss, tmp, ' ');
+            getline(ss,tmp2, ' ');
 
             while(getline(ss, token, ' ')){
-                string bigram = tmp + " " +token;
+                string bigram = tmp + " " + tmp2 + " "+ token;
                 probPos += log(returnProbability(bigram, 1));
                 probNeg += log(returnProbability(bigram, 0));
                // cout << "testing: " << bigram<<endl;
-                tmp = token;
+                tmp = tmp2;
+                tmp2 = token;
             }
         
         
