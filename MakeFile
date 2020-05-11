@@ -1,5 +1,0 @@
-NaiveBayesClassifer.sh: NaiveBayesClassifer.cpp NaiveBayesClassifer.h
-	g++ -o NaiveBayesClassifer.sh NaiveBayesClassifer.cpp NaiveBayesClassifer.h
-
-clean:
-	rm NaiveBayesClassifer.sh
