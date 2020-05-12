@@ -21,37 +21,45 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
     totalNegativeReviews = 0;
 
     if(in.is_open()){
-        
         entries = new list<Label>[size];
         while (getline(in, line)){
-        
             int label= line[line.size()-1] - '0';
-            
-
-            istringstream ss(line.substr(0, line.size()-3));
+            line = line.substr(0, line.size()-3);
+            stopWords(line);
+            istringstream ss(line);
             string token;
             if(label == 0){
                totalPositiveReviews++;
             }else{
                 totalNegativeReviews++;
             }
-           
             string tmp;
             getline(ss, tmp, ' ');
             while(getline(ss, token, ' ')){
                 string bigram = tmp + token;
                 this->insert(bigram, label);
                 tmp = token;
-            }
-           
+            }   
         }
         in.close();
-        
     } else{
         cerr << "Can't open the file"<< endl;
     } 
 }
 
+void NaiveBayesClassifier::stopWords(string& s){
+    string output = "";
+    istringstream ss(s);
+    string token;
+    while(getline(ss, token, ' ')){
+        if(token.size() != 1){
+            output = output + token;
+            output = output + " ";
+        }
+        
+    }
+    s = output.substr(0, output.size() - 1);
+}
 
 void NaiveBayesClassifier::insert(string word, int label){
     int index = this->hash(word);
@@ -95,7 +103,7 @@ int NaiveBayesClassifier::hash(string word){
 
 double NaiveBayesClassifier::returnProbability(string word, int label){
     int index = this->hash(word);
-    double a = 0.9988;
+    double a = 0.9992;
 
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
