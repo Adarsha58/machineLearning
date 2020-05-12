@@ -25,7 +25,7 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
         while (getline(in, line)){
             int label= line[line.size()-1] - '0';
             line = line.substr(0, line.size()-3);
-            stopWords(line);
+            //stopWords(line);
             istringstream ss(line);
             string token;
             if(label == 0){
@@ -49,11 +49,10 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
 
 void NaiveBayesClassifier::stopWords(string& s){
     string output = "";
-    unordered_set<string> hsh ({"ve", "he", "she", "they", "him", "her", "ar", "as", "at", "be"});
     istringstream ss(s);
     string token;
     while(getline(ss, token, ' ')){
-        if(token.size() >= 1 && (hsh.find(token) == hsh.end()) ){
+        if(token.size() >= 1){
             output = output + token;
             output = output + " ";
         }
@@ -140,7 +139,7 @@ double NaiveBayesClassifier::test(string fileName){
             int label = line[line.size()-1] - '0';
 
             line = line.substr(0, line.size()-3);
-            stopWords(line);
+            //stopWords(line);
             istringstream ss(line);
 
             string token;
