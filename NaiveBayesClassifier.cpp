@@ -49,11 +49,11 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
 
 void NaiveBayesClassifier::stopWords(string& s){
     string output = "";
-    unordered_set<string>{"ve", "he", "she", "they"};
+    unordered_set<string> hsh ({"ve", "he", "she", "they", "him", "her", "ar", "as", "at", "be"});
     istringstream ss(s);
     string token;
     while(getline(ss, token, ' ')){
-        if(token.size() >= 1){
+        if(token.size() >= 1 && (hsh.find(token) == hsh.end()) ){
             output = output + token;
             output = output + " ";
         }
