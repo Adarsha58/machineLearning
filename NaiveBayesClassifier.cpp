@@ -41,9 +41,9 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
             string tmp;
             getline(ss, tmp, ' ');
             while(getline(ss, token, ' ')){
-                int multiplier = 38;
+                int multiplier = 100;
                 string bigram = tmp + token;
-                if(s.find(bigram) != s.end()){
+                if(s.find(bigram) != s.end() && bigram.size() > 3){
                     while(multiplier!=0){
                         this->insert(bigram, label);
                         multiplier--;
