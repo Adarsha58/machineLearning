@@ -41,17 +41,18 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
             string tmp;
             getline(ss, tmp, ' ');
             while(getline(ss, token, ' ')){
-                int multiplier = 100;
+                int multiplier = 48;
                 string bigram = tmp + token;
-                if(s.find(bigram) != s.end() && bigram.size() > 3){
-                    while(multiplier!=0){
-                        this->insert(bigram, label);
-                        multiplier--;
-                    }
-                    s.erase(bigram);
-                } else{
+                if(s.find(bigram) == s.end()){
+                    this->insert(bigram,label);
                     s.insert(bigram);
-                    this->insert(bigram, label);
+                } else{
+                    if(bigram.size() > 2){
+                        while(multiplier!=0){
+                            this->insert(bigram, label);
+                            multiplier--;
+                        }
+                   }
                 }
                 tmp = token;
             }
@@ -107,7 +108,7 @@ int NaiveBayesClassifier::hash(string word){
 
 double NaiveBayesClassifier::returnProbability(string word, int label){
     int index = this->hash(word);
-    double a = 0.995;
+    double a = 1;
 
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
@@ -191,7 +192,7 @@ int main(int argc, char** argv){
     
     cout<< (int) durationTraining << " seconds (training)\n";
     cout<< (int) durationTesting << " seconds (labeling)\n";
-    
-    cout<< fixed << setprecision(3) << n.test(argv[1]) << " (training)\n";
+
+    //cout<< fixed << setprecision(3) << n.test(argv[1]) << " (training)\n";
     cout<< fixed << setprecision(3) <<  accuracy << " (testing)\n";
 }
