@@ -16,8 +16,6 @@ class NaiveBayesClassifier{
         std::list<Label>* entries;
         int totalPositiveReviewWords;
         int totalNegativeReviewWords;
-        int kPositve;
-        int kNegative;
         int k;
         int totalPositiveReviews;
         int totalNegativeReviews;

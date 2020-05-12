@@ -15,9 +15,7 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
     string line;
     totalPositiveReviewWords = 0;
     totalNegativeReviewWords = 0;
-    kPositve = 0;
-    kNegative = 0;
-    k = 0;;
+    k = 0;
     totalPositiveReviews = 0;
     totalNegativeReviews = 0;
 
@@ -59,12 +57,10 @@ void NaiveBayesClassifier::insert(string word, int label){
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
             if(label == 1){
-                if(it->positiveCount == 0) kPositve++;
                 (it->positiveCount)++;
                 totalPositiveReviewWords++;
 
             } else{
-                if(it->negativeCount == 0) kNegative++;
                 (it->negativeCount)++;
                 totalNegativeReviewWords++;
     
@@ -76,13 +72,11 @@ void NaiveBayesClassifier::insert(string word, int label){
     if(label == 0){
         Label l(word, 0, 1);
         entries[index].push_front(l);
-        kNegative ++;
         totalNegativeReviewWords++;
       
     }else{
         Label l(word, 1, 0);
         entries[index].push_front(l);
-        kPositve++;
         totalPositiveReviewWords++;
     }
 }
@@ -97,7 +91,7 @@ int NaiveBayesClassifier::hash(string word){
 
 double NaiveBayesClassifier::returnProbability(string word, int label){
     int index = this->hash(word);
-    double a = 0.998;
+    double a = 2.25;
 
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
