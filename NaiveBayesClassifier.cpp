@@ -138,7 +138,7 @@ double NaiveBayesClassifier::test(string fileName){
             double probNeg = log(pNegativeReview);
 
             int label = line[line.size()-1] - '0';
-            
+
             line = line.substr(0, line.size()-3);
             stopWords(line);
             istringstream ss(line);
@@ -192,6 +192,6 @@ int main(int argc, char** argv){
     cout<< (int) durationTraining << " seconds (training)\n";
     cout<< (int) durationTesting << " seconds (labeling)\n";
 
-   // cout<< fixed << setprecision(3) << n.test(argv[1]) << " (training)\n";
+    cout<< fixed << setprecision(3) << n.test(argv[1]) << " (training)\n";
     cout<< fixed << setprecision(3) <<  accuracy << " (testing)\n";
 }
