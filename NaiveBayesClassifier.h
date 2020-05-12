@@ -2,6 +2,7 @@
 #define NaiveBayesClassifier_H
 #include <string>
 #include <list>
+#include <unordered_set>
 using namespace std;
 
 struct Label{
@@ -27,7 +28,7 @@ class NaiveBayesClassifier{
         int hash(std::string);
         double returnProbability(std::string, int label);
         double test(std::string);
-        void stopWords(std:: string &);
+        void multiplier(std:: string, unordered_set<string>&);
 
 };
 #endif

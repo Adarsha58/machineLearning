@@ -9,6 +9,7 @@
 
 using namespace std;
 
+
 NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
     
     ifstream in(fileName);
@@ -35,12 +36,23 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
             }else{
                 totalNegativeReviews++;
             }
-           
+            unordered_set<string> s;
+    
             string tmp;
             getline(ss, tmp, ' ');
             while(getline(ss, token, ' ')){
+                int multiplier = 38;
                 string bigram = tmp + token;
-                this->insert(bigram, label);
+                if(s.find(bigram) != s.end()){
+                    while(multiplier!=0){
+                        this->insert(bigram, label);
+                        multiplier--;
+                    }
+                    s.erase(bigram);
+                } else{
+                    s.insert(bigram);
+                    this->insert(bigram, label);
+                }
                 tmp = token;
             }
            
@@ -59,12 +71,12 @@ void NaiveBayesClassifier::insert(string word, int label){
         if((it)-> word == word){
             if(label == 1){
                 if(it->positiveCount == 0) kPositve++;
-                (it->positiveCount)++;
+                (it->positiveCount) ++;
                 totalPositiveReviewWords++;
 
             } else{
                 if(it->negativeCount == 0) kNegative++;
-                (it->negativeCount)++;
+                (it->negativeCount) ++;
                 totalNegativeReviewWords++;
     
             }
@@ -100,9 +112,9 @@ double NaiveBayesClassifier::returnProbability(string word, int label){
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
             if(label == 0){
-                return (it->negativeCount + a)/ (totalNegativeReviewWords + a *kPositve);
+                return (it->negativeCount + a)/ (totalNegativeReviewWords + a *kPositve  - 1000);
             }else{
-                return (it->positiveCount + a)/ (totalPositiveReviewWords + a* kNegative);
+                return (it->positiveCount + a)/ (totalPositiveReviewWords + a* kNegative  - 2000);
             }
         }
     }
