@@ -18,6 +18,7 @@ class NaiveBayesClassifier{
         int totalNegativeReviewWords;
         int kPositve;
         int kNegative;
+        int k;
         int totalPositiveReviews;
         int totalNegativeReviews;
 
