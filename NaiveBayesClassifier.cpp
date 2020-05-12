@@ -52,7 +52,7 @@ void NaiveBayesClassifier::stopWords(string& s){
     istringstream ss(s);
     string token;
     while(getline(ss, token, ' ')){
-        if(token.size() != 1){
+        if(token.size() >= 1){
             output = output + token;
             output = output + " ";
         }
@@ -103,7 +103,7 @@ int NaiveBayesClassifier::hash(string word){
 
 double NaiveBayesClassifier::returnProbability(string word, int label){
     int index = this->hash(word);
-    double a = 0.9992;
+    double a = 1;
 
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
@@ -188,6 +188,6 @@ int main(int argc, char** argv){
     cout<< (int) durationTraining << " seconds (training)\n";
     cout<< (int) durationTesting << " seconds (labeling)\n";
 
-    cout<< fixed << setprecision(3) << n.test(argv[1]) << " (training)\n";
+   // cout<< fixed << setprecision(3) << n.test(argv[1]) << " (training)\n";
     cout<< fixed << setprecision(3) <<  accuracy << " (testing)\n";
 }
