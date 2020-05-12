@@ -95,7 +95,7 @@ int NaiveBayesClassifier::hash(string word){
 
 double NaiveBayesClassifier::returnProbability(string word, int label){
     int index = this->hash(word);
-    double a = 1.69;
+    double a = 0.85;
 
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
