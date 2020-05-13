@@ -10,7 +10,6 @@
 using namespace std;
 
 NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
-    
     ifstream in(fileName);
     string line;
     totalPositiveReviewWords = 0;
@@ -20,7 +19,6 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
     totalNegativeReviews = 0;
 
     if(in.is_open()){
-        
         entries = new list<Label>[size];
         while (getline(in, line)){
         
@@ -35,11 +33,16 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
                 totalNegativeReviews++;
             }
            
+            unordered_set<string> s;
             string tmp;
             getline(ss, tmp, ' ');
             while(getline(ss, token, ' ')){
                 string bigram = tmp + token;
-                this->insert(bigram, label);
+                if(s.find(bigram) == s.end()){
+                    s.insert(bigram);
+                    this->insert(bigram,label, 1);
+                }
+                this->insert(bigram, label, 0);
                 tmp = token;
             }
            
@@ -52,30 +55,31 @@ NaiveBayesClassifier::NaiveBayesClassifier(string fileName){
 }
 
 
-void NaiveBayesClassifier::insert(string word, int label){
+void NaiveBayesClassifier::insert(string word, int label, bool b){
     int index = this->hash(word);
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
             if(label == 1){
                 (it->positiveCount)++;
                 totalPositiveReviewWords++;
-
             } else{
                 (it->negativeCount)++;
                 totalNegativeReviewWords++;
-    
             }
+            if(b == 1) (it->docsWithWord)++;
             return;
         }
     }
     k++;
     if(label == 0){
         Label l(word, 0, 1);
+        l.docsWithWord = 1;
         entries[index].push_front(l);
         totalNegativeReviewWords++;
       
     }else{
         Label l(word, 1, 0);
+        l.docsWithWord = 1;
         entries[index].push_front(l);
         totalPositiveReviewWords++;
     }
@@ -89,16 +93,17 @@ int NaiveBayesClassifier::hash(string word){
     return hashValue % this->size; 
 }
 
-double NaiveBayesClassifier::returnProbability(string word, int label){
+double NaiveBayesClassifier::returnProbability(string word, int label, string line){
     int index = this->hash(word);
     double a = 1;
 
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
+            double weight = tf(line,word)* (1+ log((totalNegativeReviews+ totalPositiveReviews) *1.0 /(it->docsWithWord)));
             if(label == 0){
-                return (it->negativeCount + a)/ (totalNegativeReviewWords + a *(k-1000));
+                return  weight* (it->negativeCount + a)/ (totalNegativeReviewWords + a *(k-1000));
             }else{
-                return (it->positiveCount + a)/ (totalPositiveReviewWords + a* (k-1000));
+                return weight * (it->positiveCount + a)/ (totalPositiveReviewWords + a* (k-1000));
             }
         }
     }
@@ -115,7 +120,7 @@ double NaiveBayesClassifier::test(string fileName){
     ifstream in(fileName);
     string line;
   
-    double pPositiveReview = totalPositiveReviews * 1.0 / (totalPositiveReviews + totalNegativeReviews); 
+    double pPositiveReview = (totalPositiveReviews * 1.0) / (totalPositiveReviews + totalNegativeReviews); 
     double pNegativeReview = 1 - pPositiveReview;
 
     if(in.is_open()){
@@ -134,8 +139,8 @@ double NaiveBayesClassifier::test(string fileName){
         
             while(getline(ss, token, ' ')){
                 string bigram = tmp + token;
-                probPos += log(returnProbability(bigram, 1));
-                probNeg += log(returnProbability(bigram, 0));
+                probPos += log(returnProbability(bigram, 1, line));
+                probNeg += log(returnProbability(bigram, 0, line));
                 tmp = token;
             }
         
