@@ -91,14 +91,14 @@ int NaiveBayesClassifier::hash(string word){
 
 double NaiveBayesClassifier::returnProbability(string word, int label){
     int index = this->hash(word);
-    double a = 1.5;
+    double a = 1;
 
     for (list<Label>::iterator it = entries[index].begin(); it != entries[index].end(); ++it){
         if((it)-> word == word){
             if(label == 0){
-                return (it->negativeCount + a)/ (totalNegativeReviewWords + a *k);
+                return (it->negativeCount + a)/ (totalNegativeReviewWords + a *(k-1000));
             }else{
-                return (it->positiveCount + a)/ (totalPositiveReviewWords + a* k);
+                return (it->positiveCount + a)/ (totalPositiveReviewWords + a* (k-1000));
             }
         }
     }
